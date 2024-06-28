@@ -2,9 +2,9 @@ package ru.s3v3nny.endpointwithnosql.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.s3v3nny.endpointwithnosql.dto.AuthData;
+import ru.s3v3nny.endpointwithnosql.dto.TokenData;
 import ru.s3v3nny.endpointwithnosql.services.EndpointService;
 import ru.s3v3nny.endpointwithnosql.dto.Response;
 
@@ -16,8 +16,15 @@ public class EndpointController {
     private final EndpointService service;
 
     @GetMapping("/check-status")
-    public ResponseEntity checkServiceStatus () {
-        Response response = service.checkServiceStatus();
+    public ResponseEntity checkServiceStatus (@RequestBody TokenData tokenData) {
+        Response response = service.checkServiceStatus(tokenData);
+        return response.getError() == null ? ResponseEntity.ok().body(response.getValue())
+                : ResponseEntity.badRequest().body(response.getError());
+    }
+
+    @PostMapping("/get-token")
+    public ResponseEntity getToken (@RequestBody AuthData authData) {
+        Response response = service.getToken(authData);
         return response.getError() == null ? ResponseEntity.ok().body(response.getValue())
                 : ResponseEntity.badRequest().body(response.getError());
     }
