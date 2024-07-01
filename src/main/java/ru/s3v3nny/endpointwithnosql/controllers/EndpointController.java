@@ -16,8 +16,8 @@ public class EndpointController {
     private final EndpointService service;
 
     @GetMapping("/check-status")
-    public ResponseEntity checkServiceStatus (@RequestBody TokenData tokenData) {
-        Response response = service.checkServiceStatus(tokenData);
+    public ResponseEntity checkServiceStatus (@RequestHeader("token") String token) {
+        Response response = service.checkServiceStatus(token);
         return response.getError() == null ? ResponseEntity.ok().body(response.getValue())
                 : ResponseEntity.badRequest().body(response.getError());
     }

@@ -24,8 +24,8 @@ public class EndpointService {
     @Value("${auth.password_hash}")
     String passwordHash;
 
-    public Response<Message, Error> checkServiceStatus(TokenData tokenData) {
-        if (!validateToken(tokenData.token())) {
+    public Response<Message, Error> checkServiceStatus(String token) {
+        if (!validateToken(token)) {
             var err = new Error("Wrong token");
             return new Response<>(null, err);
         }
@@ -42,9 +42,9 @@ public class EndpointService {
         }
         String newToken = util.generateToken();
         Optional<Token> optionalToken = repository.findById("endpoint_token");
-        Token token = optionalToken.orElse(null);
-        token.setValue(newToken);
-        repository.save(token);
+        Token tokenObj = optionalToken.orElse(null);
+        tokenObj.setValue(newToken);
+        repository.save(tokenObj);
         var msg = new Message(newToken, serviceDtos);
         return new Response(msg, null);
     }
