@@ -15,7 +15,7 @@ public class JedisConfiguration {
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName("sloth-2.suslovd.ru");
+        configuration.setHostName("sloth-21.suslovd.ru");
         configuration.setPort(9379);
         return new JedisConnectionFactory(configuration);
     }

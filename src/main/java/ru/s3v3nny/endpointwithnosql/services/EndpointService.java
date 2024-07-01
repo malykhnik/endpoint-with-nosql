@@ -24,7 +24,25 @@ public class EndpointService {
     @Value("${auth.password_hash}")
     String passwordHash;
 
+    private boolean database_online;
+    private String cachedToken;
+
     public Response<Message, Error> checkServiceStatus(String token) {
+        if(!database_online && token.equals(cachedToken)) {
+            ArrayList<ServiceDto> serviceDtos = new ArrayList<>();
+            ServiceDto serviceDto = new ServiceDto("endpoint", "active");
+            serviceDtos.add(serviceDto);
+            serviceDto = new ServiceDto("nosql_database", "inactive");
+            String newToken = util.generateToken();
+            cachedToken = newToken;
+            serviceDtos.add(serviceDto);
+            var msg = new Message(newToken, serviceDtos);
+            return new Response(msg, null);
+        } else if (!token.equals(cachedToken)) {
+            var err = new Error("Wrong token");
+            return new Response<>(null, err);
+        }
+
         if (!validateToken(token)) {
             var err = new Error("Wrong token");
             return new Response<>(null, err);
@@ -32,14 +50,9 @@ public class EndpointService {
         ArrayList<ServiceDto> serviceDtos = new ArrayList<ServiceDto>();
         ServiceDto serviceDto = new ServiceDto("endpoint", "active");
         serviceDtos.add(serviceDto);
-        try {
-            repository.findAll();
-            serviceDto = new ServiceDto("nosql_database", "active");
-            serviceDtos.add(serviceDto);
-        } catch (Exception e) {
-            serviceDto = new ServiceDto("nosql_database", "inactive");
-            serviceDtos.add(serviceDto);
-        }
+        repository.findAll();
+        serviceDto = new ServiceDto("nosql_database", "active");
+        serviceDtos.add(serviceDto);
         String newToken = util.generateToken();
         Optional<Token> optionalToken = repository.findById("endpoint_token");
         Token tokenObj = optionalToken.orElse(null);
@@ -59,16 +72,23 @@ public class EndpointService {
             return new Response<>(null, err);
         }
         String newToken = util.generateToken();
-        Optional<Token> optionalToken = repository.findById("endpoint_token");
-        Token token = optionalToken.orElse(null);
-        if(token == null) {
-            token = new Token();
+        try {
+            Optional<Token> optionalToken = repository.findById("endpoint_token");
+            Token token = optionalToken.orElse(null);
+            if(token == null) {
+                token = new Token();
+                token.setValue(newToken);
+                token.setId("endpoint_token");
+                repository.save(token);
+            }
             token.setValue(newToken);
-            token.setId("endpoint_token");
             repository.save(token);
+            database_online = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            database_online = false;
+            cachedToken = newToken;
         }
-        token.setValue(newToken);
-        repository.save(token);
         var tokenDto = new TokenData(newToken);
         return new Response<>(tokenDto, null);
     }
