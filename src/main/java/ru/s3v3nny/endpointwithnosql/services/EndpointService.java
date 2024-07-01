@@ -38,7 +38,7 @@ public class EndpointService {
             serviceDtos.add(serviceDto);
             var msg = new Message(newToken, serviceDtos);
             return new Response(msg, null);
-        } else if (!token.equals(cachedToken)) {
+        } else if (!token.equals(cachedToken) && cachedToken != null) {
             var err = new Error("Wrong token");
             return new Response<>(null, err);
         }
