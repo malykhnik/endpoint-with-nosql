@@ -6,4 +6,5 @@ import ru.s3v3nny.endpointwithnosql.entities.Token;
 
 @Repository
 public interface TokenRepository extends CrudRepository<Token, String> {
+    Token findByValue(String value);
 }

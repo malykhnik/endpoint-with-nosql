@@ -18,6 +18,7 @@ public class EndpointService {
 
     private final TokenRepository repository;
     private final TokenUtil util;
+    private final DatabaseService databaseService;
 
     @Value("${auth.login}")
     String login;
@@ -30,9 +31,9 @@ public class EndpointService {
     public Response<Message, Error> checkServiceStatus(String token) {
         if(!database_online && token.equals(cachedToken)) {
             ArrayList<ServiceDto> serviceDtos = new ArrayList<>();
-            ServiceDto serviceDto = new ServiceDto("endpoint", "active");
+            ServiceDto serviceDto = new ServiceDto("endpoint", "active", null);
             serviceDtos.add(serviceDto);
-            serviceDto = new ServiceDto("nosql_database", "inactive");
+            serviceDto = new ServiceDto("nosql_database", "inactive", null);
             String newToken = util.generateToken();
             cachedToken = newToken;
             serviceDtos.add(serviceDto);
@@ -48,10 +49,10 @@ public class EndpointService {
             return new Response<>(null, err);
         }
         ArrayList<ServiceDto> serviceDtos = new ArrayList<ServiceDto>();
-        ServiceDto serviceDto = new ServiceDto("endpoint", "active");
+        ServiceDto serviceDto = new ServiceDto("endpoint", "active", null);
         serviceDtos.add(serviceDto);
         repository.findAll();
-        serviceDto = new ServiceDto("nosql_database", "active");
+        serviceDto = new ServiceDto("nosql_database", "active", databaseService.checkCRUDAvailability());
         serviceDtos.add(serviceDto);
         String newToken = util.generateToken();
         Optional<Token> optionalToken = repository.findById("endpoint_token");
@@ -85,7 +86,6 @@ public class EndpointService {
             repository.save(token);
             database_online = true;
         } catch (Exception e) {
-            e.printStackTrace();
             database_online = false;
             cachedToken = newToken;
         }
