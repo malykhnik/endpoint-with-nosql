@@ -1,4 +1,4 @@
-package ru.s3v3nny.endpointwithnosql.config;
+package ru.malykhnik.endpointwithnosql.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

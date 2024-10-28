@@ -1,12 +1,11 @@
-package ru.s3v3nny.endpointwithnosql.controllers;
+package ru.malykhnik.endpointwithnosql.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.s3v3nny.endpointwithnosql.dto.AuthData;
-import ru.s3v3nny.endpointwithnosql.dto.TokenData;
-import ru.s3v3nny.endpointwithnosql.services.EndpointService;
-import ru.s3v3nny.endpointwithnosql.dto.Response;
+import ru.malykhnik.endpointwithnosql.dto.AuthData;
+import ru.malykhnik.endpointwithnosql.services.EndpointService;
+import ru.malykhnik.endpointwithnosql.dto.Response;
 
 @RestController
 @RequestMapping("/api/v1")

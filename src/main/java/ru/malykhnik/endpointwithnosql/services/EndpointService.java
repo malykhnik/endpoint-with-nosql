@@ -1,13 +1,15 @@
-package ru.s3v3nny.endpointwithnosql.services;
+package ru.malykhnik.endpointwithnosql.services;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.s3v3nny.endpointwithnosql.dto.*;
-import ru.s3v3nny.endpointwithnosql.dto.Error;
-import ru.s3v3nny.endpointwithnosql.entities.Token;
-import ru.s3v3nny.endpointwithnosql.repositories.TokenRepository;
-import ru.s3v3nny.endpointwithnosql.util.TokenUtil;
+import ru.malykhnik.endpointwithnosql.dto.*;
+import ru.malykhnik.endpointwithnosql.dto.Error;
+import ru.malykhnik.endpointwithnosql.entities.Token;
+import ru.malykhnik.endpointwithnosql.repositories.TokenRepository;
+import ru.malykhnik.endpointwithnosql.util.TokenUtil;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class EndpointService {
+    private final Logger LOGGER = LoggerFactory.getLogger(EndpointService.class);
 
     private final TokenRepository repository;
     private final TokenUtil util;
@@ -38,14 +41,17 @@ public class EndpointService {
             cachedToken = newToken;
             serviceDtos.add(serviceDto);
             var msg = new Message(newToken, serviceDtos);
+            LOGGER.info("ЗАШЛО В if" + msg);
             return new Response(msg, null);
         } else if (!token.equals(cachedToken) && cachedToken != null) {
             var err = new Error("Wrong token");
+            LOGGER.error("WRONG TOKEN_1");
             return new Response<>(null, err);
         }
 
         if (!validateToken(token)) {
             var err = new Error("Wrong token");
+            LOGGER.error("WRONG TOKEN_2");
             return new Response<>(null, err);
         }
         ArrayList<ServiceDto> serviceDtos = new ArrayList<ServiceDto>();

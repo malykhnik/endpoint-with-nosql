@@ -1,4 +1,4 @@
-package ru.s3v3nny.endpointwithnosql.entities;
+package ru.malykhnik.endpointwithnosql.entities;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

@@ -1,10 +1,10 @@
-package ru.s3v3nny.endpointwithnosql.services;
+package ru.malykhnik.endpointwithnosql.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.s3v3nny.endpointwithnosql.dto.CrudStatus;
-import ru.s3v3nny.endpointwithnosql.repositories.TokenRepository;
-import ru.s3v3nny.endpointwithnosql.entities.Token;
+import ru.malykhnik.endpointwithnosql.dto.CrudStatus;
+import ru.malykhnik.endpointwithnosql.repositories.TokenRepository;
+import ru.malykhnik.endpointwithnosql.entities.Token;
 
 import java.util.Optional;
 

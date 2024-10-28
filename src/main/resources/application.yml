@@ -1,0 +1,40 @@
+server:
+  port: 3090
+
+spring:
+  application:
+    name: endpoint-with-nosql
+  datasource:
+    url: jdbc:postgresql://endpoint-with-nosql-db:5432/db_for_nosql
+    password: postgres
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  cache:
+    type: redis
+  data:
+    redis:
+      host: redis-server
+      port: 6389
+
+auth:
+  login: endpoint3
+  password_hash: $2a$12$VF25ECS9yzo16aU1RkiCueaCPlVV77DrAMWY46QPrQO62nNtJ1qLa
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
